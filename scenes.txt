@@ -1,0 +1,50 @@
+The voice-over is the master timing source. Its duration is 118.593 seconds.
+These scene ranges are approximate and may be adjusted to the spoken words.
+
+00:00-00:08
+Opening text animation: "Cancer can come back. So can an anal fistula."
+
+00:08-00:15
+Animate fistula-diagram.png with labels for the internal opening, fistula tract,
+and external opening.
+
+00:15-00:23
+Show the personal recovery problem with restrained animated text, then reveal
+the Fistula Tracker logo.
+
+00:23-00:34
+Use 01-onboarding-story.mp4 and 02-onboarding-personalization.mp4.
+
+00:34-00:46
+Use 03-home-and-checkin.mp4.
+
+00:46-00:58
+Use 04-history-and-timeline.mp4 and the first part of
+05-medicine-reminders-routines.mp4.
+
+00:58-01:09
+Use the remaining medicine/routine footage and the journal portion of
+06-journal-and-photos.mp4.
+
+01:09-01:20
+Use the photo portion of 06-journal-and-photos.mp4 and transition into the
+no-account message.
+
+01:20-01:31
+Use 07-privacy-and-settings.mp4 for local privacy and the medical disclaimer.
+
+01:31-01:43
+Use 08-lifetime-supporter.mp4. The purchase is already complete, so show the
+confirmed-support state without attempting another purchase.
+
+01:43-01:54
+Show "Every recovery feature is free" and "Care is never the paywall" with
+relevant support-screen footage.
+
+01:54-01:58.593
+Finish on the Fistula Tracker logo with the closing narration.
+
+Caption rules:
+- Split transcript.txt into short sentence-level captions of no more than two lines.
+- Synchronize captions against shipaton-VO.wav, not the broad transcript blocks.
+- Display the brand as "RevenueCat" even if speech recognition says "Revenue cap".
