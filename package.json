@@ -1,0 +1,29 @@
+{
+  "name": "fistula-tracker-shipaton-video",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Remotion source for the Fistula Tracker Shipaton demo video",
+  "scripts": {
+    "preview": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts FistulaTracker out/fistula-tracker-shipaton.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p --audio-codec=aac --audio-bitrate=192k --x264-preset=slow --color-space=bt709",
+    "contact-sheet": "node scripts/contact-sheet.mjs",
+    "typecheck": "tsc --noEmit",
+    "verify": "node scripts/verify.mjs",
+    "stills": "node scripts/stills.mjs"
+  },
+  "dependencies": {
+    "@fontsource/instrument-serif": "^5.3.0",
+    "@fontsource/manrope": "^5.2.0",
+    "@remotion/cli": "4.0.531",
+    "@remotion/layout-utils": "4.0.531",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remotion": "4.0.531"
+  },
+  "devDependencies": {
+    "@remotion/bundler": "4.0.531",
+    "@remotion/renderer": "4.0.531",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.9.0"
+  }
+}

@@ -1,0 +1,7 @@
+node_modules/
+.remotion/
+build/
+out/frames/
+out/tmp/
+*.log
+.DS_Store
