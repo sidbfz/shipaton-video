@@ -45,6 +45,7 @@ npm run stills -- 4 12 27.5 96
 ## Render
 
 ```bash
+npm run track            # (only if recordings/targets change) -> src/data/tracks.json + out/tracking-sheet.jpg
 npm run render           # -> out/tmp/render.mp4, then audio mastering -> out/fistula-tracker-shipaton.mp4
 npm run verify           # checks codec, size, fps, frame count, duration, pixel format
 npm run contact-sheet    # -> out/contact-sheet.png (frames taken from the rendered MP4)
@@ -67,7 +68,8 @@ src/
   theme.ts                  palette, fonts, fps, safe margins, easing
   fonts.tsx                 local fonts (Instrument Serif, Manrope) + render gate
   data/captions.ts          sentence-level captions (word-aligned) + caption zones
-  data/timeline.ts          the phone's path across the frame, text columns, dark fields
+  data/timeline.ts          phone position, the two side columns, dark fields
+  data/tracks.json          per-frame positions of app sections (from track_targets.py)
   data/vo-words.json        forced-alignment output: every word's start/end time
   components/
     timing.tsx              <At> / useT(): author everything in absolute VO seconds
@@ -78,18 +80,20 @@ src/
                             clean status bar, dips between screens, highlights,
                             touch-dot patches on freeze frames
     phoneGeometry.ts        phone dimensions and source-px -> canvas mapping
+    tracking.ts             reads tracks.json: tracked box, visibility, scroll speed
     FistulaDiagram.tsx      original vector diagram with the tract drawn on
     Transitions.tsx         fades, soft reveals, mask reveals
     Grain.tsx               paper fibres, fine film grain, soft vignette
   scenes/
     Intro.tsx               hook, diagram, personal story, logo reveal
-    Demo.tsx                app demo: one phone, shot list with source trims,
-                            highlights, check-in triptych, editorial beats
+    Demo.tsx                app demo: one centred phone, shot list with source trims,
+                            highlights + callouts, check-in triptych, headlines
     Outro.tsx               "Care is never the paywall" (grows out of the app's card),
                             phone callbacks, closing logo
   ContactSheet.tsx          layout for out/contact-sheet.png
 scripts/
   align_vo.py               offline forced alignment (PocketSphinx) -> vo-words.json
+  track_targets.py          frame-by-frame tracking of scrolling app sections -> tracks.json
   stills.mjs                preview stills at arbitrary timestamps
   contact-sheet.mjs         contact sheet from the rendered MP4
   verify.mjs                delivery-spec checks on the rendered MP4
@@ -107,8 +111,28 @@ shifts another.
 - **App shots**: edit `MAIN_SHOTS` (and the triptych `SLOT*_SHOTS`) in
   `src/scenes/Demo.tsx`. `at` = VO second, `clip` = position in the recording,
   `holdAt` = clean freeze frame, `highlights` = boxes in source pixels
-  (720 × 1606) to outline while the narration names them, `patches` = paint out
-  a frozen touch indicator on a flat button.
+  (720 × 1606) to outline while the narration names them (optionally with a
+  `callout` joined by a leader line), `patches` = paint out a frozen touch
+  indicator.
+- **Layout**: the phone stays centred. Headlines sit to its left (right-aligned
+  toward it); callouts or short lists sit to its right, the same distance away;
+  captions sit beneath it.
+- **Pointing rules** (enforced by `validateShots()`, which fails the render):
+  - a *static* highlight may only sit on a held frame — the frame its box was
+    measured on;
+  - a *tracked* highlight (`tracked('id', from, to, …)`) may sit on playing
+    footage, but only within the source frames measured in `tracks.json`;
+  - both must end before the next screen.
+- **Callouts**: the text stays still; the leader line's phone end follows the
+  highlight every frame and bends at an elbow. If a section drifts more than
+  250 px from the text, the text glides after it; during fast scrolls the note
+  dims slightly until the screen settles.
+- **Tracking** (`npm run track`): for each target in `scripts/track_targets.py`
+  a section-header strip is cut from the reference frame and found in every
+  source frame (slightly blurred, so sub-pixel scroll rendering doesn't matter).
+  A first lock needs a near-exact match; while locked, a match may not jump more
+  than 150 px between frames, and isolated matches are discarded. Check
+  `out/tracking-sheet.jpg` after re-running.
 - **Phone movement**: `PHONE_PATH` in `src/data/timeline.ts`.
 - **Scene windows**: `src/Video.tsx`.
 

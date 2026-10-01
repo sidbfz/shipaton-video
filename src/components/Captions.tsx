@@ -2,7 +2,7 @@ import {fitTextOnNLines, measureText} from '@remotion/layout-utils';
 import React from 'react';
 import {AbsoluteFill, interpolate} from 'remotion';
 import {CAPTION_ZONES, CAPTIONS, CaptionDef, CaptionZone} from '../data/captions';
-import {darknessAt, TEXT_COL} from '../data/timeline';
+import {darknessAt} from '../data/timeline';
 import {colors, ease, fonts} from '../theme';
 import {useT} from './timing';
 
@@ -10,12 +10,11 @@ const LEAD = 0.12; // caption appears slightly before the first word
 const TAIL = 0.7; // and lingers after the last word unless the next one starts
 const FADE = 0.16;
 
-const ZONES: Record<CaptionZone, {left: number; width: number; maxFont: number}> = {
-	center: {left: 280, width: 1360, maxFont: 38},
-	colLeft: {left: TEXT_COL.left.x, width: TEXT_COL.left.width, maxFont: 36},
-	colRight: {left: TEXT_COL.right.x, width: TEXT_COL.right.width, maxFont: 36},
+const ZONES: Record<CaptionZone, {left: number; width: number; maxFont: number; bottom: number}> = {
+	center: {left: 280, width: 1360, maxFont: 38, bottom: 84},
+	// Beneath the centred phone during the app demo.
+	underPhone: {left: 300, width: 1320, maxFont: 33, bottom: 62},
 };
-const BOTTOM = 84;
 
 type Timed = CaptionDef & {from: number; to: number; zone: CaptionZone};
 
@@ -116,7 +115,7 @@ const CaptionView: React.FC<{c: Timed; t: number}> = ({c, t}) => {
 				position: 'absolute',
 				left: z.left,
 				width: z.width,
-				bottom: BOTTOM,
+				bottom: z.bottom,
 				textAlign: 'center',
 				fontFamily: fonts.sans,
 				fontWeight: 500,

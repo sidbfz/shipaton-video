@@ -73,16 +73,12 @@ export const CAPTIONS: CaptionDef[] = [
 ];
 
 /**
- * Where captions sit. App scenes place the recording on one side and
- * captions under the opposite text column so they never cover app controls.
+ * Where captions sit. During the app demo they sit beneath the centred phone,
+ * so they never cover the app.
  */
-export type CaptionZone = 'center' | 'colLeft' | 'colRight';
+export type CaptionZone = 'center' | 'underPhone';
 export const CAPTION_ZONES: {from: number; zone: CaptionZone}[] = [
 	{from: 0, zone: 'center'},
-	{from: 24.2, zone: 'colRight'}, // phone on the left
-	{from: 43.6, zone: 'center'}, // daily check-in: three phones across the frame
-	{from: 47.45, zone: 'colLeft'}, // phone on the right
-	{from: 68.85, zone: 'colRight'},
-	{from: 91.15, zone: 'colLeft'},
+	{from: 24.2, zone: 'underPhone'}, // app demo: the phone sits on the centre axis
 	{from: 104.9, zone: 'center'},
 ];

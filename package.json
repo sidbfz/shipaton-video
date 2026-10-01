@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "verify": "node scripts/verify.mjs",
     "stills": "node scripts/stills.mjs",
-    "master-audio": "node scripts/master-audio.mjs"
+    "master-audio": "node scripts/master-audio.mjs",
+    "track": "python3 scripts/track_targets.py --sheet out/tracking-sheet.jpg"
   },
   "dependencies": {
     "@fontsource/instrument-serif": "^5.3.0",

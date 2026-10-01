@@ -2,13 +2,36 @@ import React from 'react';
 import {Freeze, interpolate, OffthreadVideo, staticFile} from 'remotion';
 import {colors, ease, f, FPS} from '../theme';
 import {APP_BG, phoneDims, SRC_H, SRC_W, STATUS_BAR_H} from './phoneGeometry';
+import {checkTrackRange, trackState, TRACKS} from './tracking';
 import {At, useT} from './timing';
 
 /** A box in source pixels of the 720 x 1606 recording: [x, y, w, h]. */
 export type Box = [number, number, number, number];
 
-/** A soft rose outline around a control while the narration names it; the rest of the screen dims slightly. */
-export type Highlight = {from: number; to: number; box: Box; radius?: number};
+/** Text beside the phone, joined to a highlight by a leader line. */
+export type Callout = {
+	label: string;
+	note?: string;
+	/** a brand name set large in the sans (e.g. RevenueCat) */
+	brand?: string;
+};
+
+/**
+ * A soft rose outline around a control while the narration names it; the rest
+ * of the screen dims slightly. Either:
+ *  - static: sits on a held freeze frame (the frame its box was measured on), or
+ *  - tracked: `track` names a section in src/data/tracks.json and the box
+ *    follows it frame by frame while the recording plays.
+ * validateShots() enforces this, so a box always matches the pixels beneath it.
+ */
+export type Highlight = {from: number; to: number; box: Box; radius?: number; callout?: Callout; track?: string};
+
+/** A highlight that follows a tracked section (box comes from tracks.json). */
+export const tracked = (id: string, from: number, to: number, extra: Omit<Highlight, 'from' | 'to' | 'box' | 'track'> = {}): Highlight => {
+	const tr = TRACKS[id];
+	if (!tr) throw new Error(`Unknown track "${id}" — run scripts/track_targets.py`);
+	return {from, to, box: tr.box, track: id, ...extra};
+};
 
 /** Hides a frozen touch indicator by painting the flat surface colour back over it. */
 export type Patch = {x: number; y: number; r: number; color: string};
@@ -26,6 +49,32 @@ export type PhoneShot = {
 	/** applied to the held frame only */
 	patches?: Patch[];
 	highlights?: Highlight[];
+};
+
+/**
+ * Guards the pointing system. A static highlight (and its callout) is only
+ * allowed while the recording is frozen on its `holdAt` frame — the frame its
+ * box was measured on. A tracked highlight may sit on moving footage, but only
+ * within the source frames the tracker measured. Both must end before the next
+ * screen arrives. Rendering fails loudly instead of pointing at the wrong pixels.
+ */
+export const validateShots = (name: string, shots: PhoneShot[]) => {
+	shots.forEach((shot, i) => {
+		const next = shots[i + 1];
+		for (const h of shot.highlights ?? []) {
+			const where = `${name}[${i}] ${shot.src}@${shot.clip} highlight ${h.from}–${h.to}`;
+			if (h.track) {
+				checkTrackRange(h.track, shot, h.from, h.to, where);
+			} else {
+				if (shot.holdAt === undefined) throw new Error(`${where}: static highlights need a held frame (holdAt)`);
+				const holdStart = shot.at + (shot.holdAt - shot.clip);
+				if (h.from < holdStart - 1e-6) throw new Error(`${where}: starts before the hold at ${holdStart.toFixed(2)}s`);
+			}
+			if (next && h.to > next.at + 1e-6) throw new Error(`${where}: outlasts the screen (next at ${next.at}s)`);
+			if (h.to <= h.from) throw new Error(`${where}: empty range`);
+		}
+	});
+	return shots;
 };
 
 const DIP_OUT = 0.14;
@@ -76,14 +125,28 @@ const Footage: React.FC<{shot: PhoneShot}> = ({shot}) => {
 	);
 };
 
-const HighlightLayer: React.FC<{h: Highlight}> = ({h}) => {
-	const t = useT();
+/** Opacity of a highlight at time t (fade in/out, times on-screen visibility when tracked). */
+export const highlightOpacity = (h: Highlight, shot: PhoneShot, t: number) => {
 	const a = Math.min(
 		interpolate(t, [h.from, h.from + 0.35], [0, 1], {...clamp, easing: ease.soft}),
 		interpolate(t, [h.to - 0.35, h.to], [1, 0], {...clamp, easing: ease.soft}),
 	);
+	if (!h.track || a <= 0) return a;
+	const st = trackState(h.track, shot, t);
+	return st ? a * st.visible : 0;
+};
+
+/** The highlight's box (source px) at time t. */
+export const highlightBox = (h: Highlight, shot: PhoneShot, t: number): Box => {
+	if (!h.track) return h.box;
+	return trackState(h.track, shot, t)?.box ?? h.box;
+};
+
+const HighlightLayer: React.FC<{h: Highlight; shot: PhoneShot}> = ({h, shot}) => {
+	const t = useT();
+	const a = highlightOpacity(h, shot, t);
 	if (a <= 0) return null;
-	const [x, y, w, hh] = h.box;
+	const [x, y, w, hh] = highlightBox(h, shot, t);
 	const pad = 6;
 	return (
 		<div
@@ -111,7 +174,7 @@ const ShotLayer: React.FC<{shot: PhoneShot; next?: PhoneShot; first: boolean}> =
 		<div style={{position: 'absolute', inset: 0, opacity: Math.min(fadeIn, fadeOut)}}>
 			<Footage shot={shot} />
 			{(shot.highlights ?? []).map((h, i) => (
-				<HighlightLayer key={i} h={h} />
+				<HighlightLayer key={i} h={h} shot={shot} />
 			))}
 		</div>
 	);

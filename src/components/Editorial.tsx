@@ -22,12 +22,14 @@ export const Rich: React.FC<{text: string; italicColor?: string}> = ({text, ital
 	);
 };
 
-export const Eyebrow: React.FC<{at: number; out?: number; children: React.ReactNode; color?: string}> = ({
-	at,
-	out,
-	children,
-	color = colors.rose,
-}) => {
+export const Eyebrow: React.FC<{
+	at: number;
+	out?: number;
+	children: React.ReactNode;
+	color?: string;
+	/** 'right': text first, rule on the side facing the phone */
+	align?: 'left' | 'right';
+}> = ({at, out, children, color = colors.rose, align = 'left'}) => {
 	const t = useT();
 	const opacity = useFade(at, out, 0.5, 0.35);
 	const rule = interpolate(t, [at, at + 0.8], [0, 44], {
@@ -49,10 +51,12 @@ export const Eyebrow: React.FC<{at: number; out?: number; children: React.ReactN
 				textTransform: 'uppercase',
 				color,
 				marginBottom: 30,
+				justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
 			}}
 		>
-			<div style={{width: rule, height: 1.5, background: color}} />
+			{align === 'left' ? <div style={{width: rule, height: 1.5, background: color}} /> : null}
 			{children}
+			{align === 'right' ? <div style={{width: rule, height: 1.5, background: color, marginLeft: -6}} /> : null}
 		</div>
 	);
 };
@@ -66,7 +70,7 @@ export const Headline: React.FC<{
 	stagger?: number;
 	color?: string;
 	italicColor?: string;
-	align?: 'left' | 'center';
+	align?: 'left' | 'center' | 'right';
 }> = ({lines, at, out, size = 92, stagger = 0.14, color = colors.ink, italicColor, align = 'left'}) => (
 	<div
 		style={{
