@@ -32,7 +32,7 @@ export const Grain: React.FC<{opacity?: number}> = ({opacity = 1}) => {
 			{/* Vignette */}
 			<AbsoluteFill
 				style={{
-					background: 'radial-gradient(ellipse 75% 70% at 50% 48%, rgba(0,0,0,0) 62%, rgba(70,48,36,0.10) 100%)',
+					background: 'radial-gradient(ellipse 75% 70% at 50% 48%, rgba(0,0,0,0) 62%, rgba(70,48,36,0.05) 100%)',
 				}}
 			/>
 		</AbsoluteFill>

@@ -2,6 +2,7 @@ import {fitTextOnNLines, measureText} from '@remotion/layout-utils';
 import React from 'react';
 import {AbsoluteFill, interpolate} from 'remotion';
 import {CAPTION_ZONES, CAPTIONS, CaptionDef, CaptionZone} from '../data/captions';
+import {darknessAt, TEXT_COL} from '../data/timeline';
 import {colors, ease, fonts} from '../theme';
 import {useT} from './timing';
 
@@ -10,9 +11,9 @@ const TAIL = 0.7; // and lingers after the last word unless the next one starts
 const FADE = 0.16;
 
 const ZONES: Record<CaptionZone, {left: number; width: number; maxFont: number}> = {
-	center: {left: 300, width: 1320, maxFont: 36},
-	colLeft: {left: 160, width: 760, maxFont: 33},
-	colRight: {left: 1000, width: 760, maxFont: 33},
+	center: {left: 280, width: 1360, maxFont: 38},
+	colLeft: {left: TEXT_COL.left.x, width: TEXT_COL.left.width, maxFont: 36},
+	colRight: {left: TEXT_COL.right.x, width: TEXT_COL.right.width, maxFont: 36},
 };
 const BOTTOM = 84;
 
@@ -103,6 +104,11 @@ const CaptionView: React.FC<{c: Timed; t: number}> = ({c, t}) => {
 		easing: ease.out,
 	});
 	const outP = interpolate(t, [c.to - FADE, c.to], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+	// Over the dark hook and "Care is never the paywall" fields, captions turn light.
+	const dark = darknessAt(t);
+	const ink = dark > 0.5 ? colors.cream : colors.ink;
+	const glow = dark > 0.5 ? colors.charcoal : colors.cream;
+	const accent = dark > 0.5 ? colors.roseSoft : colors.roseDeep;
 	let w = 0;
 	return (
 		<div
@@ -116,11 +122,11 @@ const CaptionView: React.FC<{c: Timed; t: number}> = ({c, t}) => {
 				fontWeight: 500,
 				fontSize,
 				lineHeight: 1.42,
-				color: colors.ink,
+				color: ink,
 				letterSpacing: '-0.005em',
 				opacity: Math.min(inP, outP),
 				transform: `translateY(${(1 - inP) * 8}px)`,
-				textShadow: `0 0 18px ${colors.cream}, 0 0 6px ${colors.cream}`,
+				textShadow: `0 0 18px ${glow}, 0 0 6px ${glow}`,
 			}}
 		>
 			{lines.map((line, li) => (
@@ -130,7 +136,7 @@ const CaptionView: React.FC<{c: Timed; t: number}> = ({c, t}) => {
 						return (
 							<React.Fragment key={wi}>
 								{wi > 0 ? ' ' : ''}
-								<span style={hl ? {color: colors.roseDeep, fontWeight: 700} : undefined}>{word}</span>
+								<span style={hl ? {color: accent, fontWeight: 700} : undefined}>{word}</span>
 							</React.Fragment>
 						);
 					})}

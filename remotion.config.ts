@@ -13,3 +13,8 @@ Config.setPixelFormat('yuv420p');
 if (process.env.BROWSER_EXECUTABLE) {
 	Config.setBrowserExecutable(process.env.BROWSER_EXECUTABLE);
 }
+
+// Optional: render with more parallel browser tabs, e.g. REMOTION_CONCURRENCY=4 npm run render
+if (process.env.REMOTION_CONCURRENCY) {
+	Config.setConcurrency(Number(process.env.REMOTION_CONCURRENCY));
+}

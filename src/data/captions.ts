@@ -8,7 +8,7 @@
  *
  * `hidden` captions are spoken lines that are already typeset on screen
  * word-for-word as editorial typography (hook, "Care is never the paywall",
- * closing phrases) — showing both would duplicate the same words twice.
+ * "I hope you never need it", closing phrases) — showing both would duplicate the same words twice.
  *
  * `hl` phrases are highlighted in the muted rose accent (used sparingly).
  * The transcript's "Revenue cap" is a recognition error: always "RevenueCat".
@@ -67,7 +67,7 @@ export const CAPTIONS: CaptionDef[] = [
 	{text: 'Care is never the paywall.', s: 105.16, e: 106.34, hidden: true},
 	{text: 'I built Fistula Tracker because it is the app I wish I had', s: 106.84, e: 109.74},
 	{text: 'during my own recovery.', s: 109.74, e: 110.81},
-	{text: 'I hope you never need it.', s: 111.03, e: 112.02},
+	{text: 'I hope you never need it.', s: 111.03, e: 112.02, hidden: true},
 	{text: 'But if you do, I hope it makes recovery…', s: 113.54, e: 115.13},
 	{text: 'more organized, more private, and a little less lonely.', s: 115.13, e: 117.86, hidden: true},
 ];
@@ -79,8 +79,9 @@ export const CAPTIONS: CaptionDef[] = [
 export type CaptionZone = 'center' | 'colLeft' | 'colRight';
 export const CAPTION_ZONES: {from: number; zone: CaptionZone}[] = [
 	{from: 0, zone: 'center'},
-	{from: 24.2, zone: 'colRight'}, // recording on the left
-	{from: 47.45, zone: 'colLeft'}, // recording on the right
+	{from: 24.2, zone: 'colRight'}, // phone on the left
+	{from: 43.6, zone: 'center'}, // daily check-in: three phones across the frame
+	{from: 47.45, zone: 'colLeft'}, // phone on the right
 	{from: 68.85, zone: 'colRight'},
 	{from: 91.15, zone: 'colLeft'},
 	{from: 104.9, zone: 'center'},

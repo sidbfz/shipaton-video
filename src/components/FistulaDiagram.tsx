@@ -103,15 +103,15 @@ const Label: React.FC<{t: number; at: number; x1: number; y1: number; x2: number
 	const ey = y1 + (y2 - y1) * p;
 	return (
 		<g opacity={Math.min(1, p * 3)}>
-			<circle cx={x1} cy={y1} r={4} fill={colors.ink} />
-			<line x1={x1} y1={y1} x2={ex} y2={ey} stroke={colors.ink} strokeWidth="1.5" />
-			<line x1={x2} y1={y2} x2={x2 + 40 * txt} y2={y2} stroke={colors.ink} strokeWidth="1.5" />
+			<circle cx={x1} cy={y1} r={5} fill={colors.ink} />
+			<line x1={x1} y1={y1} x2={ex} y2={ey} stroke={colors.ink} strokeWidth="2" />
+			<line x1={x2} y1={y2} x2={x2 + 36 * txt} y2={y2} stroke={colors.ink} strokeWidth="2" />
 			<text
-				x={x2 + 54}
-				y={y2 + 9}
+				x={x2 + 48}
+				y={y2 + 11}
 				opacity={txt}
 				transform={`translate(${(1 - txt) * -8} 0)`}
-				style={{fontFamily: fonts.sans, fontWeight: 600, fontSize: 27, fill: colors.ink, letterSpacing: '0.01em'}}
+				style={{fontFamily: fonts.sans, fontWeight: 600, fontSize: 32, fill: colors.ink, letterSpacing: '0.005em'}}
 			>
 				{text}
 			</text>

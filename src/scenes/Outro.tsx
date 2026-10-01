@@ -1,24 +1,42 @@
+import {measureText} from '@remotion/layout-utils';
 import React from 'react';
 import {AbsoluteFill, Img, interpolate, staticFile} from 'remotion';
-import {AppWindow} from '../components/AppRecording';
 import {Headline, Icon, Rich} from '../components/Editorial';
+import {Phone, PhoneShot} from '../components/Phone';
+import {boxOnCanvas} from '../components/phoneGeometry';
 import {FadeLayer, MaskLine, Reveal, useFade} from '../components/Transitions';
 import {useT} from '../components/timing';
+import {CARE_CARD, phoneAt} from '../data/timeline';
 import {colors, ease, fonts} from '../theme';
+import {CARE_CARD_BOX} from './Demo';
 
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
-/** 01:45 — "Care is never the paywall." Echoes the app's own dark card. */
+/**
+ * 01:45 — "Care is never the paywall." The app's own dark card grows out of
+ * the phone until it fills the frame, then the line lands once, large.
+ */
 export const CareCard: React.FC = () => {
 	const t = useT();
-	const p = interpolate(t, [104.95, 106.8], [0, 1], clamp);
+	const p = phoneAt(CARE_CARD.expandFrom);
+	const from = boxOnCanvas(CARE_CARD_BOX, p.cx, p.cy, p.sh);
+	const k = interpolate(t, [CARE_CARD.expandFrom, CARE_CARD.expandTo], [0, 1], {...clamp, easing: ease.inOut});
+	const out = interpolate(t, [CARE_CARD.outFrom, CARE_CARD.outTo], [1, 0], {...clamp, easing: ease.soft});
+	const x = from.x * (1 - k);
+	const y = from.y * (1 - k);
+	const w = from.w + (1920 - from.w) * k;
+	const h = from.h + (1080 - from.h) * k;
+	const r = 20 * (1 - k);
+	const drift = interpolate(t, [105.1, 106.9], [0, 1], clamp);
+	const textOpacity = interpolate(t, [CARE_CARD.textOut - 0.3, CARE_CARD.textOut], [1, 0], clamp);
 	return (
-		<FadeLayer inAt={104.85} inDur={0.35} outAt={106.95} outDur={0.45} style={{background: colors.charcoal}}>
+		<AbsoluteFill style={{opacity: out}}>
+			<div style={{position: 'absolute', left: x, top: y, width: w, height: h, borderRadius: r, background: colors.charcoal}} />
 			<AbsoluteFill style={{justifyContent: 'center', alignItems: 'center'}}>
-				<div style={{textAlign: 'center', transform: `scale(${1 + p * 0.02})`}}>
-					<Reveal at={105.0} dy={8}>
+				<div style={{textAlign: 'center', transform: `scale(${1 + drift * 0.02})`, opacity: textOpacity}}>
+					<Reveal at={105.05} dy={8}>
 						<div style={{display: 'flex', justifyContent: 'center', marginBottom: 40}}>
-							<Icon kind="heart" size={54} color={colors.roseSoft} />
+							<Icon kind="heart" size={56} color={colors.roseSoft} />
 						</div>
 					</Reveal>
 					<div style={{fontFamily: fonts.serif, fontStyle: 'italic', fontSize: 150, lineHeight: 1.05, color: colors.cream}}>
@@ -28,101 +46,70 @@ export const CareCard: React.FC = () => {
 					</div>
 				</div>
 			</AbsoluteFill>
+		</AbsoluteFill>
+	);
+};
+
+type Callback = {src: string; clip: number};
+const CALLBACKS: Callback[] = [
+	{src: '03-home-and-checkin.mp4', clip: 0.5}, // Home
+	{src: '04-history-and-timeline.mp4', clip: 9.5}, // Recovery timeline
+	{src: '06-journal-and-photos.mp4', clip: 10.4}, // Journal
+];
+const CB = {sh: 560, cy: 560, gap: 330};
+
+/** 01:47–01:53 — "the app I wish I had" over three small phones, then "I hope you never need it." */
+export const Resolution: React.FC = () => {
+	const t = useT();
+	const phonesOut = useFade(0, 111.15, 0, 0.45);
+	const drift = interpolate(t, [106.8, 111.3], [10, -10], clamp);
+	return (
+		<FadeLayer inAt={106.6} inDur={0.3} outAt={113.25} outDur={0.4}>
+			<div style={{opacity: phonesOut}}>
+				<div style={{position: 'absolute', left: 0, right: 0, top: 120, textAlign: 'center'}}>
+					<Headline lines={['The app I wish *I had.*']} at={108.6} size={92} align="center" italicColor={colors.roseDeep} />
+				</div>
+				{CALLBACKS.map((c, i) => {
+					const at = 106.9 + i * 0.22;
+					const p = interpolate(t, [at, at + 0.8], [0, 1], {...clamp, easing: ease.out});
+					const shot: PhoneShot = {src: c.src, at: 106.6, clip: c.clip, holdAt: c.clip};
+					return (
+						<div key={c.src} style={{position: 'absolute', inset: 0, transform: `translate(${drift}px, ${(1 - p) * 30}px)`}}>
+							<Phone shots={[shot]} end={111.7} cx={960 + (i - 1) * CB.gap} cy={CB.cy} screenH={CB.sh} opacity={p} />
+						</div>
+					);
+				})}
+			</div>
+			<AbsoluteFill style={{justifyContent: 'center', alignItems: 'center'}}>
+				<div style={{fontFamily: fonts.serif, fontStyle: 'italic', fontSize: 96, color: colors.ink, transform: 'translateY(-20px)'}}>
+					<MaskLine at={111.0} out={113.2} dur={0.9}>
+						I hope you never need it.
+					</MaskLine>
+				</div>
+			</AbsoluteFill>
 		</FadeLayer>
 	);
 };
 
-type Callback = {label: string; src: string; clip: number; fy: number; zoom?: number};
-const CALLBACKS: Callback[] = [
-	{label: 'Home', src: '03-home-and-checkin.mp4', clip: 0.5, fy: 0.3},
-	{label: 'Check-in', src: '03-home-and-checkin.mp4', clip: 4.35, fy: 0.3, zoom: 1.1},
-	{label: 'Medicines', src: '05-medicine-reminders-routines.mp4', clip: 4.7, fy: 0.36},
-	{label: 'Journal', src: '06-journal-and-photos.mp4', clip: 10.5, fy: 0.4},
-	{label: 'Timeline', src: '04-history-and-timeline.mp4', clip: 8.0, fy: 0.5},
+const PHRASES: {text: string; at: number; italic?: boolean}[] = [
+	{text: 'More organized.', at: 115.08},
+	{text: 'More private.', at: 115.89},
+	{text: 'A little less lonely.', at: 116.9, italic: true},
 ];
-const CB = {w: 272, h: 440, gap: 38};
+const PHRASE_SIZE = 64;
+const PHRASE_GAP = 54;
 
-/** 01:47–01:53 — "the app I wish I had", with short feature callbacks, then the feature graphic. */
-export const Resolution: React.FC = () => {
+/** The feature graphic's line-and-dots motif, redrawn in the palette. */
+const LineMotif: React.FC<{at: number}> = ({at}) => {
 	const t = useT();
-	const rowW = CALLBACKS.length * CB.w + (CALLBACKS.length - 1) * CB.gap;
-	const drift = interpolate(t, [106.7, 111.3], [16, -16], clamp);
-	const rowOut = useFade(0, 111.25, 0, 0.5);
-	const g = interpolate(t, [110.9, 113.5], [0, 1], clamp);
+	const p = interpolate(t, [at, at + 0.9], [0, 1], {...clamp, easing: ease.out});
+	const dots = interpolate(t, [at + 0.5, at + 1.0], [0, 1], clamp);
 	return (
-		<FadeLayer inAt={106.7} inDur={0.4} outAt={113.3} outDur={0.45}>
-			<div style={{opacity: rowOut}}>
-				<div style={{position: 'absolute', left: 0, right: 0, top: 150, textAlign: 'center'}}>
-					<Headline lines={['The app I wish *I had.*']} at={108.6} size={88} align="center" italicColor={colors.roseDeep} />
-				</div>
-				<div
-					style={{
-						position: 'absolute',
-						top: 330,
-						left: (1920 - rowW) / 2 + drift,
-						width: rowW,
-						height: CB.h + 60,
-					}}
-				>
-					{CALLBACKS.map((c, i) => {
-						const at = 106.85 + i * 0.22;
-						const p = interpolate(t, [at, at + 0.8], [0, 1], {...clamp, easing: ease.out});
-						return (
-							<div
-								key={c.label}
-								style={{
-									position: 'absolute',
-									left: i * (CB.w + CB.gap),
-									top: (1 - p) * 26,
-									opacity: p,
-								}}
-							>
-								<AppWindow
-									shots={[{src: c.src, at: 106.7, clip: c.clip, holdAt: c.clip, cam: [{t: 0, zoom: c.zoom ?? 1, fy: c.fy}]}]}
-									end={111.8}
-									x={0}
-									y={0}
-									w={CB.w}
-									h={CB.h}
-									style={{borderRadius: 18}}
-								/>
-								<div
-									style={{
-										marginTop: CB.h + 18,
-										textAlign: 'center',
-										fontFamily: fonts.sans,
-										fontWeight: 700,
-										fontSize: 16,
-										letterSpacing: '0.22em',
-										textTransform: 'uppercase',
-										color: colors.rose,
-									}}
-								>
-									{c.label}
-								</div>
-							</div>
-						);
-					})}
-				</div>
-			</div>
-			{/* "I hope you never need it." */}
-			<FadeLayer inAt={111.1} inDur={0.6}>
-				<AbsoluteFill style={{justifyContent: 'center', alignItems: 'center'}}>
-					<div
-						style={{
-							width: 1024,
-							height: 500,
-							borderRadius: 22,
-							overflow: 'hidden',
-							transform: `translateY(-50px) scale(${1 + g * 0.03})`,
-							boxShadow: '0 0 0 1px rgba(42,39,36,0.08), 0 30px 70px -24px rgba(70,48,36,0.35)',
-						}}
-					>
-						<Img src={staticFile('feature-graphic.png')} style={{width: 1024, height: 500, display: 'block'}} />
-					</div>
-				</AbsoluteFill>
-			</FadeLayer>
-		</FadeLayer>
+		<svg width={320} height={14} viewBox="0 0 320 14" style={{display: 'block', margin: '0 auto'}}>
+			<line x1={0} y1={7} x2={250 * p} y2={7} stroke={colors.rose} strokeWidth={3} strokeLinecap="round" />
+			<circle cx={278} cy={7} r={5} fill={colors.rose} opacity={dots} />
+			<circle cx={302} cy={7} r={5} fill={colors.rose} opacity={dots} />
+		</svg>
 	);
 };
 
@@ -130,50 +117,54 @@ export const Resolution: React.FC = () => {
 export const Closing: React.FC = () => {
 	const t = useT();
 	const logoP = interpolate(t, [113.4, 114.45], [0, 1], {...clamp, easing: ease.out});
-	const phrasesOut = useFade(0, 118.35, 0, 0.45);
-	const phrases: {text: string; at: number}[] = [
-		{text: 'More organized.', at: 115.13},
-		{text: 'More private.', at: 115.94},
-		{text: '*A little less lonely.*', at: 116.95},
-	];
+	// Keep whatever phrases are visible centred: the row re-centres as each one arrives.
+	const widths = PHRASES.map(
+		(p) =>
+			measureText({
+				text: p.text,
+				fontFamily: 'Instrument Serif',
+				fontSize: PHRASE_SIZE,
+				fontWeight: 400,
+				additionalStyles: p.italic ? {fontStyle: 'italic'} : undefined,
+			}).width,
+	);
+	const offsets = widths.map((_, i) => widths.slice(0, i).reduce((a, w) => a + w + PHRASE_GAP, 0));
+	const visibleWidth = PHRASES.reduce((acc, p, i) => {
+		const k = interpolate(t, [p.at - 0.1, p.at + 0.5], [0, 1], {...clamp, easing: ease.inOut});
+		return i === 0 ? widths[0] : acc + (PHRASE_GAP + widths[i]) * k;
+	}, 0);
+	const rowLeft = 960 - visibleWidth / 2;
 	return (
 		<FadeLayer inAt={113.3} inDur={0.3}>
-			<AbsoluteFill style={{alignItems: 'center'}}>
-				<div
-					style={{
-						position: 'absolute',
-						top: 120,
-						width: 320,
-						height: 320,
-						opacity: logoP,
-						transform: `scale(${0.94 + 0.06 * logoP})`,
-						clipPath: `circle(${30 + logoP * 45}% at 50% 50%)`,
-					}}
-				>
-					<Img src={staticFile('logo.png')} style={{width: 320, height: 320}} />
-				</div>
-				<div style={{position: 'absolute', top: 478}}>
-					<Headline lines={['Fistula Tracker']} at={113.75} size={92} align="center" />
-				</div>
-				<div
-					style={{
-						position: 'absolute',
-						top: 660,
-						display: 'flex',
-						gap: 54,
-						opacity: phrasesOut,
-						fontFamily: fonts.serif,
-						fontSize: 66,
-						color: colors.ink,
-					}}
-				>
-					{phrases.map((p) => (
-						<MaskLine key={p.text} at={p.at - 0.05} dur={0.8}>
-							<Rich text={p.text} italicColor={colors.roseDeep} />
+			<div
+				style={{
+					position: 'absolute',
+					top: 250,
+					left: 960 - 130,
+					width: 260,
+					height: 260,
+					opacity: logoP,
+					transform: `scale(${0.94 + 0.06 * logoP})`,
+					clipPath: `circle(${30 + logoP * 45}% at 50% 50%)`,
+				}}
+			>
+				<Img src={staticFile('logo.png')} style={{width: 260, height: 260}} />
+			</div>
+			<div style={{position: 'absolute', top: 540, left: 0, right: 0}}>
+				<Headline lines={['Fistula Tracker']} at={113.75} size={92} align="center" />
+			</div>
+			<div style={{position: 'absolute', top: 668, left: 0, right: 0}}>
+				<LineMotif at={114.2} />
+			</div>
+			<div style={{position: 'absolute', top: 720, left: 0, right: 0, height: 90, fontFamily: fonts.serif, fontSize: PHRASE_SIZE, color: colors.ink}}>
+				{PHRASES.map((p, i) => (
+					<div key={p.text} style={{position: 'absolute', left: rowLeft + offsets[i], top: 0, whiteSpace: 'nowrap'}}>
+						<MaskLine at={p.at - 0.05} dur={0.8}>
+							<Rich text={p.italic ? `*${p.text}*` : p.text} italicColor={colors.roseDeep} />
 						</MaskLine>
-					))}
-				</div>
-			</AbsoluteFill>
+					</div>
+				))}
+			</div>
 		</FadeLayer>
 	);
 };

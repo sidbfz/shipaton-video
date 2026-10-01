@@ -44,7 +44,7 @@ export const Eyebrow: React.FC<{at: number; out?: number; children: React.ReactN
 				gap: 16,
 				fontFamily: fonts.sans,
 				fontWeight: 700,
-				fontSize: 17,
+				fontSize: 20,
 				letterSpacing: '0.22em',
 				textTransform: 'uppercase',
 				color,
@@ -96,7 +96,7 @@ export const Sub: React.FC<{at: number; out?: number; children: React.ReactNode;
 		<div
 			style={{
 				fontFamily: fonts.sans,
-				fontSize: 26,
+				fontSize: 30,
 				lineHeight: 1.5,
 				fontWeight: 400,
 				color: colors.inkSoft,
@@ -113,7 +113,7 @@ export const TimedList: React.FC<{
 	out?: number;
 	marker?: 'dot' | 'dash' | 'check';
 	size?: number;
-}> = ({items, out, marker = 'dot', size = 30}) => (
+}> = ({items, out, marker = 'dot', size = 32}) => (
 	<div style={{marginTop: 40, display: 'flex', flexDirection: 'column', gap: 16}}>
 		{items.map((it) => (
 			<Reveal key={it.text} at={it.at} out={out} dy={10} dur={0.55}>
@@ -167,7 +167,7 @@ export const Tag: React.FC<{at: number; out?: number; icon?: 'lock' | 'device' |
 				background: 'rgba(235, 214, 207, 0.35)',
 				fontFamily: fonts.sans,
 				fontWeight: 600,
-				fontSize: 22,
+				fontSize: 25,
 				color: colors.roseDeep,
 			}}
 		>

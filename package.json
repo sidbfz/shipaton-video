@@ -5,11 +5,12 @@
   "description": "Remotion source for the Fistula Tracker Shipaton demo video",
   "scripts": {
     "preview": "remotion studio src/index.ts",
-    "render": "remotion render src/index.ts FistulaTracker out/fistula-tracker-shipaton.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p --audio-codec=aac --audio-bitrate=192k --x264-preset=slow --color-space=bt709",
+    "render": "remotion render src/index.ts FistulaTracker out/tmp/render.mp4 --codec=h264 --crf=17 --pixel-format=yuv420p --audio-codec=aac --audio-bitrate=192k --x264-preset=slow --color-space=bt709 && node scripts/master-audio.mjs",
     "contact-sheet": "node scripts/contact-sheet.mjs",
     "typecheck": "tsc --noEmit",
     "verify": "node scripts/verify.mjs",
-    "stills": "node scripts/stills.mjs"
+    "stills": "node scripts/stills.mjs",
+    "master-audio": "node scripts/master-audio.mjs"
   },
   "dependencies": {
     "@fontsource/instrument-serif": "^5.3.0",
