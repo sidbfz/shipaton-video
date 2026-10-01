@@ -14,6 +14,7 @@ the timing authority; every visual change is keyed to its spoken words.
 | Runtime | 118.625 s (voice-over: 118.593 s) |
 | Codec | H.264 (yuv420p, BT.709), AAC 192 kbps, mastered to −17 LUFS |
 | Subtitles | `out/fistula-tracker-shipaton.srt` (separate track, not burned in) |
+| Thumbnail | `out/thumbnail.png` (1280 × 720, `src/Thumbnail.tsx`) |
 
 ## Install
 
@@ -52,6 +53,7 @@ npm run render           # -> out/tmp/render.mp4, then audio mastering -> out/fi
 npm run verify           # checks codec, size, fps, frame count, duration, pixel format
 npm run contact-sheet    # -> out/contact-sheet.png (frames taken from the rendered MP4)
 npm run srt              # -> out/fistula-tracker-shipaton.srt (subtitles to upload with the video)
+npm run thumbnail        # -> out/thumbnail.png (YouTube thumbnail, 1280 × 720)
 ```
 
 `npm run render` encodes H.264 CRF 17 (x264 `slow`), yuv420p with BT.709
