@@ -5,3 +5,4 @@ out/frames/
 out/tmp/
 *.log
 .DS_Store
+__pycache__/
