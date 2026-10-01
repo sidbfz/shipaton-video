@@ -16,6 +16,8 @@ export const Hook: React.FC = () => {
 	const settle = interpolate(t, [2.55, 3.55], [0, 1], {...clamp, easing: ease.inOut});
 	const scale = 1 - 0.3 * settle;
 	const lift = -150 * settle;
+	// "Cancer can come back." starts centred on its own; the pair glides into place as line two arrives.
+	const pairGlide = interpolate(t, [1.15, 1.75], [76, 0], {...clamp, easing: ease.inOut});
 	// Type clears first ("…gone forever" ends at 6.33s), then the dark field lifts slowly
 	// (a fast lift from charcoal to cream reads as a flash).
 	const textOpacity = useFade(0, 6.42, 0, 0.35);
@@ -29,7 +31,7 @@ export const Hook: React.FC = () => {
 		>
 			<AbsoluteFill style={{opacity: textOpacity}}>
 				<AbsoluteFill style={{justifyContent: 'center', alignItems: 'center'}}>
-					<div style={{transform: `translateY(${lift}px) scale(${scale})`, textAlign: 'center'}}>
+					<div style={{transform: `translateY(${lift + pairGlide}px) scale(${scale})`, textAlign: 'center'}}>
 						{/* Starts slightly before frame 0 so the very first frame already shows type. */}
 						<Headline lines={['Cancer can come back.']} at={-0.25} size={128} color={colors.cream} align="center" />
 						<div style={{height: 14}} />
@@ -72,7 +74,7 @@ export const Diagram: React.FC = () => {
 	const drift = interpolate(t, [6.5, 12.6], [0, 1], clamp);
 	return (
 		<FadeLayer inAt={6.55} inDur={0.7} outAt={12.45} outDur={0.35}>
-			<div style={{position: 'absolute', left: 170, top: 300, width: 560}}>
+			<div style={{position: 'absolute', left: 170, top: 384, width: 560}}>
 				<Eyebrow at={6.8}>Anal fistula</Eyebrow>
 				<Headline lines={['A second', '*opening.*']} at={6.9} size={108} italicColor={colors.roseDeep} />
 				<Sub at={7.9} width={540}>
@@ -83,7 +85,7 @@ export const Diagram: React.FC = () => {
 				style={{
 					position: 'absolute',
 					left: 740,
-					top: 150,
+					top: 234,
 					// Wide enough to include the labels, which extend past the drawing.
 					width: 1040,
 					height: 680,
@@ -164,10 +166,13 @@ export const Personal: React.FC = () => {
 	const logoP = interpolate(t, [22.35, 23.35], [0, 1], {...clamp, easing: ease.out});
 	// Stays until "Medicines" arrives, so the frame is never empty.
 	const firstOut = useFade(0, 17.2, 0, 0.55);
+	// The block is centred on whatever is visible: "I had one." alone, then with "Two surgeries.",
+	// then all three lines — gliding between those positions as each line arrives.
+	const blockGlide = interpolate(t, [13.55, 14.15, 14.7, 15.3], [146, 38, 38, 0], {...clamp, easing: ease.inOut});
 	return (
 		<FadeLayer inAt={12.35} inDur={0.3} outAt={24.3} outDur={0.4}>
 			<AbsoluteFill style={{justifyContent: 'center', alignItems: 'center', opacity: firstOut}}>
-				<div style={{textAlign: 'center', transform: 'translateY(-30px)'}}>
+				<div style={{textAlign: 'center', transform: `translateY(${blockGlide}px)`}}>
 					<Reveal at={12.4} style={{marginBottom: 26}}>
 						<div style={{fontFamily: fonts.serif, fontStyle: 'italic', fontSize: 64, color: colors.inkSoft}}>I had one.</div>
 					</Reveal>
