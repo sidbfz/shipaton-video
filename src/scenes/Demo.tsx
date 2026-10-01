@@ -28,7 +28,9 @@ import {colors, ease, fonts, FPS} from '../theme';
  *  - 06 19.2s+    (the demo photo is revealed; it stays in its hidden state)
  *  - 08 2.2–4.2s and 5.8s+ ("Checking the store…" spinner, then touch
  *    indicators on the support card) — the purchase is already complete.
- * Frozen touch indicators are painted out with `patches`.
+ * Touch indicators: on held frames they are painted out with `patches`; on
+ * playing footage automatically from src/data/dot-patches.json
+ * (scripts/clean_touch_dots.py).
  */
 
 const BUTTON = '#181818';
@@ -140,10 +142,11 @@ const MAIN_SHOTS: PhoneShot[] = validateShots('MAIN', [
 			{from: 63.25, to: 65.05, box: [30, 126, 664, 764], radius: 30, callout: {label: 'Return to this thought', note: 'Dated entries you can edit.'}},
 		],
 	},
-	// "and anything you want to remember for your next appointment."
+	// "and anything you want to remember for your next appointment." (same screen, later: a cut)
 	{
 		src: '06-journal-and-photos.mp4',
 		at: 65.15,
+		cut: true,
 		clip: 9.3,
 		holdAt: 10.4,
 		highlights: [
@@ -163,6 +166,7 @@ const MAIN_SHOTS: PhoneShot[] = validateShots('MAIN', [
 	{
 		src: '06-journal-and-photos.mp4',
 		at: 71.25,
+		cut: true,
 		clip: 17.05,
 		holdAt: 18.45,
 		patches: [{x: 622, y: 749, r: 23, color: PHOTO_CARD}],

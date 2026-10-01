@@ -2,6 +2,7 @@ import React from 'react';
 import {Freeze, interpolate, OffthreadVideo, staticFile} from 'remotion';
 import {colors, ease, f, FPS} from '../theme';
 import {APP_BG, phoneDims, SRC_H, SRC_W, STATUS_BAR_H} from './phoneGeometry';
+import {DotPatches} from './dotPatches';
 import {checkTrackRange, trackState, TRACKS} from './tracking';
 import {At, useT} from './timing';
 
@@ -44,7 +45,7 @@ export type PhoneShot = {
 	clip: number;
 	/** clip time at which playback freezes on a clean frame and holds */
 	holdAt?: number;
-	/** switch without the dip (continuous footage of the same screen) */
+	/** switch with a plain cut instead of the push (a later moment of the same screen) */
 	cut?: boolean;
 	/** applied to the held frame only */
 	patches?: Patch[];
@@ -77,8 +78,8 @@ export const validateShots = (name: string, shots: PhoneShot[]) => {
 	return shots;
 };
 
-const DIP_OUT = 0.14;
-const DIP_IN = 0.18;
+/** App-style navigation: the next screen pushes in from the right, so the phone is never empty. */
+const PUSH = 0.34;
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
 const videoStyle: React.CSSProperties = {position: 'absolute', left: 0, top: 0, width: SRC_W, height: SRC_H};
@@ -167,23 +168,37 @@ const HighlightLayer: React.FC<{h: Highlight; shot: PhoneShot}> = ({h, shot}) =>
 
 const ShotLayer: React.FC<{shot: PhoneShot; next?: PhoneShot; first: boolean}> = ({shot, next, first}) => {
 	const t = useT();
-	const fadeIn = first || shot.cut ? 1 : interpolate(t, [shot.at, shot.at + DIP_IN], [0, 1], {...clamp, easing: ease.soft});
-	const fadeOut =
-		!next || next.cut ? 1 : interpolate(t, [next.at - DIP_OUT, next.at], [1, 0], {...clamp, easing: ease.soft});
+	const opts = {...clamp, easing: ease.inOut};
+	// Incoming screen slides in from the right edge…
+	const inX = first || shot.cut ? 0 : interpolate(t, [shot.at, shot.at + PUSH], [SRC_W, 0], opts);
+	// …while the outgoing one eases a little to the left and dims, like app navigation.
+	const pushed = next && !next.cut ? interpolate(t, [next.at, next.at + PUSH], [0, 1], opts) : 0;
+	const outX = -0.28 * SRC_W * pushed;
 	return (
-		<div style={{position: 'absolute', inset: 0, opacity: Math.min(fadeIn, fadeOut)}}>
+		<div
+			style={{
+				position: 'absolute',
+				inset: 0,
+				background: APP_BG,
+				transform: `translateX(${inX + outX}px)`,
+				boxShadow: inX > 0.5 ? '-18px 0 36px rgba(40, 30, 24, 0.16)' : undefined,
+			}}
+		>
 			<Footage shot={shot} />
+			<DotPatches shot={shot} />
 			{(shot.highlights ?? []).map((h, i) => (
 				<HighlightLayer key={i} h={h} shot={shot} />
 			))}
+			{pushed > 0 ? <div style={{position: 'absolute', inset: 0, background: `rgba(30, 26, 22, ${0.12 * pushed})`}} /> : null}
 		</div>
 	);
 };
 
 /**
  * A phone at true proportions showing the complete app screen — never cropped,
- * never zoomed inside. Screens change with a brief dip through the app's own
- * background so two screens of text never overlap.
+ * never zoomed inside. Screens change with an app-style push (the next screen
+ * slides in over the dimmed previous one), or a plain cut for a later moment of
+ * the same screen, so the phone never shows an empty screen.
  */
 export const Phone: React.FC<{
 	shots: PhoneShot[];
@@ -228,7 +243,7 @@ export const Phone: React.FC<{
 					{shots.map((shot, i) => {
 						const next = shots[i + 1];
 						return (
-							<At key={i} start={shot.at} end={next ? next.at + 0.05 : end} name={`${shot.src}@${shot.clip}`}>
+							<At key={i} start={shot.at} end={next ? next.at + (next.cut ? 0.05 : PUSH + 0.05) : end} name={`${shot.src}@${shot.clip}`}>
 								<ShotLayer shot={shot} next={next} first={i === 0} />
 							</At>
 						);
