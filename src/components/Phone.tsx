@@ -50,7 +50,11 @@ export type PhoneShot = {
 	/** applied to the held frame only */
 	patches?: Patch[];
 	highlights?: Highlight[];
+	/** a soft ring marking a tap the recording makes (absolute VO second, source px) */
+	taps?: Tap[];
 };
+
+export type Tap = {t: number; x: number; y: number};
 
 /**
  * Guards the pointing system. A static highlight (and its callout) is only
@@ -73,6 +77,10 @@ export const validateShots = (name: string, shots: PhoneShot[]) => {
 			}
 			if (next && h.to > next.at + 1e-6) throw new Error(`${where}: outlasts the screen (next at ${next.at}s)`);
 			if (h.to <= h.from) throw new Error(`${where}: empty range`);
+		}
+		for (const tap of shot.taps ?? []) {
+			const end = next ? next.at : Infinity;
+			if (tap.t < shot.at || tap.t + TAP_DUR > end) throw new Error(`${name}[${i}] tap at ${tap.t}s: outside the screen's time`);
 		}
 	});
 	return shots;
@@ -143,6 +151,32 @@ export const highlightBox = (h: Highlight, shot: PhoneShot, t: number): Box => {
 	return trackState(h.track, shot, t)?.box ?? h.box;
 };
 
+const TAP_DUR = 0.55;
+
+/** A rose ring that expands and fades where the recording taps a control. */
+const TapLayer: React.FC<{tap: Tap}> = ({tap}) => {
+	const t = useT();
+	const p = (t - tap.t) / TAP_DUR;
+	if (p < 0 || p > 1) return null;
+	const r = interpolate(p, [0, 1], [22, 54], {easing: ease.soft});
+	const fill = interpolate(p, [0, 0.35], [0.32, 0], clamp);
+	return (
+		<div
+			style={{
+				position: 'absolute',
+				left: tap.x - r,
+				top: tap.y - r,
+				width: r * 2,
+				height: r * 2,
+				borderRadius: r,
+				border: `4px solid ${colors.rose}`,
+				background: `rgba(180, 114, 110, ${fill})`,
+				opacity: interpolate(p, [0, 0.15, 1], [0, 1, 0], clamp),
+			}}
+		/>
+	);
+};
+
 const HighlightLayer: React.FC<{h: Highlight; shot: PhoneShot}> = ({h, shot}) => {
 	const t = useT();
 	const a = highlightOpacity(h, shot, t);
@@ -188,6 +222,9 @@ const ShotLayer: React.FC<{shot: PhoneShot; next?: PhoneShot; first: boolean}> =
 			<DotPatches shot={shot} />
 			{(shot.highlights ?? []).map((h, i) => (
 				<HighlightLayer key={i} h={h} shot={shot} />
+			))}
+			{(shot.taps ?? []).map((tap, i) => (
+				<TapLayer key={i} tap={tap} />
 			))}
 			{pushed > 0 ? <div style={{position: 'absolute', inset: 0, background: `rgba(30, 26, 22, ${0.12 * pushed})`}} /> : null}
 		</div>

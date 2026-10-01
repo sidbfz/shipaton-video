@@ -45,7 +45,9 @@ W, H, FPS = 720, 1606, 24
 
 # Source ranges that PLAY in the video (seconds) — keep in sync with the shot
 # lists in src/scenes/Demo.tsx (a shot without holdAt keeps playing ~0.4 s
-# into the next push). Held freeze frames use hand-placed `patches`.
+# into the next push). Held freeze frames use hand-placed `patches`. Not listed:
+# 06 at 18.625–19.34 s, the tap on "Reveal photo" — that dot is the click the
+# video shows (marked by a tap ring), and the fading photo trips the detector.
 RANGES = {
     '01-onboarding-story.mp4': [(6.3, 10.15), (3.2, 5.4)],
     '02-onboarding-personalization.mp4': [(14.05, 14.6)],

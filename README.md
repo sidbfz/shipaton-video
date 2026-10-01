@@ -118,7 +118,8 @@ shifts another.
   (720 × 1606) to outline while the narration names them (optionally with a
   `callout` joined by a leader line), `patches` = paint out a frozen touch
   indicator, `cut: true` = switch with a plain cut instead of the push (for a
-  later moment of the same screen).
+  later moment of the same screen), `taps` = a rose ring marking a tap the
+  recording makes (used for the "Reveal photo" moment).
 - **Screen changes**: the next screen pushes in from the right over the
   slightly dimmed previous one (0.34 s), like app navigation, so the phone is
   never empty.
@@ -171,6 +172,9 @@ python3 scripts/align_vo.py
   that names the developer, the system photo picker (it shows a personal
   gallery), the store-check spinner and any touch indicator on the supporter
   screen (the purchase is already complete; only the confirmed state is shown).
+- The recovery-photo screen is shown hidden first, then the tap on "Reveal
+  photo" and the revealed picture. The picture in the recording is a demo photo
+  of a plush toy; no wound imagery appears anywhere in the video.
 - The app is always shown as a complete phone screen at its true proportions;
   it is never cropped or zoomed. The status bar (clock, notification icons) is
   covered with the app's own background; recordings are only scaled uniformly.

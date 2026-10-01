@@ -162,7 +162,7 @@ const MAIN_SHOTS: PhoneShot[] = validateShots('MAIN', [
 		holdAt: 13.55,
 		highlights: [{from: 70.4, to: 71.2, box: [24, 553, 674, 148], radius: 20}],
 	},
-	// "They stay organized alongside the rest of your recovery history…" — held in the hidden state
+	// "They stay organized alongside the rest of your recovery history" — held in the hidden state
 	{
 		src: '06-journal-and-photos.mp4',
 		at: 71.25,
@@ -171,7 +171,21 @@ const MAIN_SHOTS: PhoneShot[] = validateShots('MAIN', [
 		holdAt: 18.45,
 		patches: [{x: 622, y: 749, r: 23, color: PHOTO_CARD}],
 		highlights: [
-			{from: 72.75, to: 76.3, box: [18, 500, 684, 815], radius: 30, callout: {label: 'Your visual record', note: 'Hidden until you choose to reveal it.'}},
+			{from: 72.75, to: 74.05, box: [18, 500, 684, 815], radius: 30, callout: {label: 'Hidden by default', note: 'Nothing shows until you choose.'}},
+		],
+	},
+	// "instead of getting lost in your normal gallery." — the tap on "Reveal photo" and the
+	// (demo) photo fading in; held before the screen scrolls. Clip starts on the same picture
+	// as the hold above, so the cut is invisible.
+	{
+		src: '06-journal-and-photos.mp4',
+		at: 74.1,
+		cut: true,
+		clip: 18.625,
+		holdAt: 19.34,
+		taps: [{t: 74.27, x: 421, y: 1104}],
+		highlights: [
+			{from: 75.0, to: 76.3, box: [18, 500, 684, 815], radius: 30, callout: {label: 'Your visual record', note: 'Dated, and kept out of your gallery.'}},
 		],
 	},
 	// ── Privacy ──
