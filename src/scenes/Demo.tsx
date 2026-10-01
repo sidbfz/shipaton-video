@@ -82,7 +82,7 @@ const MAIN_SHOTS: PhoneShot[] = validateShots('MAIN', [
 	{
 		src: '03-home-and-checkin.mp4',
 		at: 41.25,
-		clip: 1.2,
+		clip: 1.95, // check-in already open (the app's own Home -> check-in jump is at 1.75s)
 		holdAt: 3.7,
 		highlights: [{from: 44.35, to: 45.25, box: [12, 600, 696, 360], radius: 22}],
 	},
