@@ -4,12 +4,13 @@ import {ease} from '../theme';
 
 /**
  * One phone carries the whole app demo (24.2s–105s). It stays centred on the
- * frame's vertical axis — a headline on its left, callouts attached to the
- * highlighted control on its right, the caption beneath it — and only leaves
- * the centre to become the first of three phones for the daily check-in.
+ * frame's centre — a headline on its left, callouts attached to the
+ * highlighted control on its right — and only leaves the centre to become the
+ * first of three phones for the daily check-in. There are no burned-in
+ * captions (they ship as a separate .srt), so the phone uses the full height.
  */
-export const PHONE = {sh: 840, cy: 458, cx: 960};
-export const TRIPTYCH = {sh: 740, cy: 445, slots: [560, 960, 1360]};
+export const PHONE = {sh: 950, cy: 540, cx: 960};
+export const TRIPTYCH = {sh: 860, cy: 540, slots: [505, 960, 1415]};
 
 type Key = {t: number; cx: number; cy: number; sh: number};
 const C = {cx: PHONE.cx, cy: PHONE.cy, sh: PHONE.sh};
@@ -46,19 +47,19 @@ export const phoneAt = (t: number) => {
  * Text columns either side of the centred phone. Both sit the same distance
  * (GAP) from the device, so the eye travels equally far in each direction.
  */
-const GAP = 110;
+const GAP = 100;
 const halfDevice = phoneDims(PHONE.sh).deviceW / 2;
 export const SIDE = {
 	/** right edge of the left (headline) column */
 	leftEdge: Math.round(PHONE.cx - halfDevice - GAP),
 	/** left edge of the right (callout) column */
 	rightEdge: Math.round(PHONE.cx + halfDevice + GAP),
-	width: 540,
-	top: 110,
-	bottom: 830,
+	width: 520,
+	top: 130,
+	bottom: 950,
 };
 
-/** Dark full-frame fields: the opening hook and "Care is never the paywall". Captions turn light over them. */
+/** Dark full-frame fields: the opening hook and "Care is never the paywall". */
 export const HOOK_LIFT = {from: 6.35, to: 7.25};
 /** The line clears first ('paywall' ends 106.34s), then the dark field lifts slowly. */
 export const CARE_CARD = {expandFrom: 104.75, expandTo: 105.35, textOut: 106.6, outFrom: 106.55, outTo: 107.25};

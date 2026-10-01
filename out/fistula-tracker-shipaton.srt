@@ -1,0 +1,220 @@
+1
+00:00:00,000 --> 00:00:01,100
+Cancer can come back.
+
+2
+00:00:01,120 --> 00:00:02,520
+So can an anal fistula.
+
+3
+00:00:02,540 --> 00:00:04,100
+Even with all the progress in medicine,
+
+4
+00:00:04,120 --> 00:00:06,440
+there is no promise that
+either is gone forever.
+
+5
+00:00:06,460 --> 00:00:09,270
+A fistula is like having a
+second opening near your anus.
+
+6
+00:00:09,290 --> 00:00:12,320
+It can leak, bleed,
+and cause serious pain.
+
+7
+00:00:12,340 --> 00:00:14,460
+I had one, and I went
+through two surgeries.
+
+8
+00:00:14,480 --> 00:00:16,440
+Recovery did not end after surgery.
+
+9
+00:00:16,460 --> 00:00:19,100
+I still had medicines to
+remember, symptoms to track,
+
+10
+00:00:19,120 --> 00:00:21,720
+wounds to monitor, and
+questions for my doctor.
+
+11
+00:00:21,740 --> 00:00:24,240
+That is why I built Fistula Tracker.
+
+12
+00:00:24,260 --> 00:00:27,490
+When you first open the app, the
+onboarding introduces my story
+
+13
+00:00:27,510 --> 00:00:29,110
+and explains why I created it.
+
+14
+00:00:29,130 --> 00:00:32,170
+It also asks a few questions
+about your condition and recovery.
+
+15
+00:00:32,190 --> 00:00:33,420
+Your answers are saved locally
+
+16
+00:00:33,440 --> 00:00:36,030
+and used to adapt the app's
+experience to your needs.
+
+17
+00:00:36,050 --> 00:00:39,300
+After onboarding, the home screen gives
+you a simple view of your recovery
+
+18
+00:00:39,320 --> 00:00:41,250
+and shows what needs your attention today.
+
+19
+00:00:41,270 --> 00:00:43,680
+Daily check-ins guide you
+through a few short questions.
+
+20
+00:00:43,700 --> 00:00:47,450
+You can record pain, discharge,
+bowel movements, and other changes.
+
+21
+00:00:47,470 --> 00:00:49,380
+Your previous check-ins are saved by date,
+
+22
+00:00:49,400 --> 00:00:52,250
+helping you understand how your
+recovery has changed over time.
+
+23
+00:00:52,270 --> 00:00:54,600
+The medicine section helps
+you organize what you take,
+
+24
+00:00:54,620 --> 00:00:58,250
+add instructions, and create
+reminders for important doses.
+
+25
+00:00:58,270 --> 00:01:00,340
+You can also create
+simple recovery routines
+
+26
+00:01:00,360 --> 00:01:02,150
+and keep your daily tasks together.
+
+27
+00:01:02,170 --> 00:01:05,100
+The journal gives you a private
+place to save thoughts, questions,
+
+28
+00:01:05,120 --> 00:01:08,190
+and anything you want to remember
+for your next appointment.
+
+29
+00:01:08,880 --> 00:01:11,140
+You can save dated recovery photos too.
+
+30
+00:01:11,160 --> 00:01:14,010
+They stay organized alongside
+the rest of your recovery history
+
+31
+00:01:14,030 --> 00:01:16,520
+instead of getting lost
+in your normal gallery.
+
+32
+00:01:16,540 --> 00:01:19,210
+Fistula Tracker requires no account.
+
+33
+00:01:19,250 --> 00:01:22,680
+Your onboarding answers, check-ins,
+medicines, journal entries, and photos
+
+34
+00:01:22,700 --> 00:01:24,390
+stay locally on your device.
+
+35
+00:01:24,410 --> 00:01:26,730
+The app does not diagnose
+you, recommend treatment,
+
+36
+00:01:26,750 --> 00:01:28,640
+or replace professional medical care.
+
+37
+00:01:28,660 --> 00:01:31,170
+It simply helps you
+organize your own recovery.
+
+38
+00:01:31,190 --> 00:01:32,910
+Every recovery feature is free.
+
+39
+00:01:32,930 --> 00:01:36,010
+There are no advertisements,
+subscriptions, or locked care tools.
+
+40
+00:01:36,030 --> 00:01:38,920
+RevenueCat powers one optional
+Lifetime Supporter purchase
+
+41
+00:01:38,940 --> 00:01:41,460
+for people who want to
+support the project.
+
+42
+00:01:41,550 --> 00:01:45,020
+Whether you purchase it or not, every
+recovery tool remains available.
+
+43
+00:01:45,040 --> 00:01:46,700
+Care is never the paywall.
+
+44
+00:01:46,720 --> 00:01:49,600
+I built Fistula Tracker because
+it is the app I wish I had
+
+45
+00:01:49,620 --> 00:01:50,890
+during my own recovery.
+
+46
+00:01:50,910 --> 00:01:52,720
+I hope you never need it.
+
+47
+00:01:53,420 --> 00:01:54,990
+But if you do, I hope it makes recovery…
+
+48
+00:01:55,010 --> 00:01:58,560
+more organized, more private,
+and a little less lonely.

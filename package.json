@@ -12,7 +12,8 @@
     "stills": "node scripts/stills.mjs",
     "master-audio": "node scripts/master-audio.mjs",
     "track": "python3 scripts/track_targets.py --sheet out/tracking-sheet.jpg",
-    "dots": "python3 scripts/clean_touch_dots.py"
+    "dots": "python3 scripts/clean_touch_dots.py",
+    "srt": "node --no-warnings scripts/export-srt.mjs"
   },
   "dependencies": {
     "@fontsource/instrument-serif": "^5.3.0",

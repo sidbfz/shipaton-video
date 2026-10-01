@@ -56,7 +56,7 @@ const CALLBACKS: Callback[] = [
 	{src: '04-history-and-timeline.mp4', clip: 9.5}, // Recovery timeline
 	{src: '06-journal-and-photos.mp4', clip: 10.4}, // Journal
 ];
-const CB = {sh: 560, cy: 560, gap: 330};
+const CB = {sh: 650, cy: 610, gap: 370};
 
 /** 01:47–01:53 — "the app I wish I had" over three small phones, then "I hope you never need it." */
 export const Resolution: React.FC = () => {

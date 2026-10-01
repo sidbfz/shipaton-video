@@ -13,6 +13,7 @@ the timing authority; every visual change is keyed to its spoken words.
 | Frame count | 2,847 frames |
 | Runtime | 118.625 s (voice-over: 118.593 s) |
 | Codec | H.264 (yuv420p, BT.709), AAC 192 kbps, mastered to −17 LUFS |
+| Subtitles | `out/fistula-tracker-shipaton.srt` (separate track, not burned in) |
 
 ## Install
 
@@ -50,6 +51,7 @@ npm run dots             # (only if shot trims change) -> src/data/dot-patches.j
 npm run render           # -> out/tmp/render.mp4, then audio mastering -> out/fistula-tracker-shipaton.mp4
 npm run verify           # checks codec, size, fps, frame count, duration, pixel format
 npm run contact-sheet    # -> out/contact-sheet.png (frames taken from the rendered MP4)
+npm run srt              # -> out/fistula-tracker-shipaton.srt (subtitles to upload with the video)
 ```
 
 `npm run render` encodes H.264 CRF 17 (x264 `slow`), yuv420p with BT.709
@@ -76,8 +78,8 @@ src/
   components/
     timing.tsx              <At> / useT(): author everything in absolute VO seconds
     Editorial.tsx           eyebrows, masked serif headlines, sub copy, timed lists
-    Captions.tsx            two-line-max captions, measured to fit, rose highlights,
-                            light-on-dark over the dark fields
+    Captions.tsx            burned-in captions (off: BURN_IN_CAPTIONS in Video.tsx);
+                            two-line-max, measured to fit, light-on-dark over dark fields
     Phone.tsx               phone at true 9:20 proportions: full screen, never zoomed,
                             clean status bar, push transitions between screens,
                             highlights, touch-dot patches on freeze frames
@@ -109,9 +111,13 @@ scripts/
 All times are **absolute voice-over seconds**, so a change in one scene never
 shifts another.
 
-- **Captions**: edit `src/data/captions.ts`. `s`/`e` come from
-  `src/data/vo-words.json`; a caption shows from slightly before its first word
-  until just after its last (or until the next caption).
+- **Subtitles**: edit `src/data/captions.ts`. `s`/`e` come from
+  `src/data/vo-words.json`; a subtitle shows from slightly before its first word
+  until just after its last (or until the next one). They are not burned into
+  the picture — the headlines and callouts carry the story on screen — and ship
+  as an `.srt` (`npm run srt`) to upload with the video, e.g. on YouTube, which
+  also keeps auto-captions from misspelling RevenueCat. To burn them in again,
+  set `BURN_IN_CAPTIONS` in `src/Video.tsx` (and leave room under the phone).
 - **App shots**: edit `MAIN_SHOTS` (and the triptych `SLOT*_SHOTS`) in
   `src/scenes/Demo.tsx`. `at` = VO second, `clip` = position in the recording,
   `holdAt` = clean freeze frame, `highlights` = boxes in source pixels
@@ -123,9 +129,10 @@ shifts another.
 - **Screen changes**: the next screen pushes in from the right over the
   slightly dimmed previous one (0.34 s), like app navigation, so the phone is
   never empty.
-- **Layout**: the phone stays centred. Headlines sit to its left (right-aligned
-  toward it); callouts or short lists sit to its right, the same distance away;
-  captions sit beneath it.
+- **Layout**: the phone stays centred and uses the full height (screen 950 px).
+  Headlines sit to its left (right-aligned toward it); callouts or short lists
+  sit to its right, the same distance away. Sizes live in
+  `src/data/timeline.ts` (`PHONE`, `TRIPTYCH`, `SIDE`).
 - **Pointing rules** (enforced by `validateShots()`, which fails the render):
   - a *static* highlight may only sit on a held frame — the frame its box was
     measured on;
@@ -164,10 +171,9 @@ python3 scripts/align_vo.py
 
 - The transcript's "Revenue cap" is a recognition error; it is always shown as
   **RevenueCat**.
-- Captions are hidden only where the same words are already typeset on screen
-  word for word (the opening hook, "Care is never the paywall.", "I hope you
-  never need it.", and the closing "more organized, more private, and a little
-  less lonely").
+- The subtitle track includes every spoken line, also the ones typeset on
+  screen word for word (the opening hook, "Care is never the paywall.", "I hope
+  you never need it.", and the closing phrases), so it is complete on its own.
 - Recording ranges that are deliberately never shown: the onboarding header
   that names the developer, the system photo picker (it shows a personal
   gallery), the store-check spinner and any touch indicator on the supporter

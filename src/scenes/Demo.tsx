@@ -303,7 +303,7 @@ const SlotPhone: React.FC<{shots: PhoneShot[]; cx: number; inAt: number}> = ({sh
 
 const CALLOUT = {labelSize: 19, noteSize: 44, labelGap: 14};
 const GLIDE_DEADZONE = 250;
-const TEXT_Y = {min: 170, max: 800};
+const TEXT_Y = {min: 190, max: 910};
 
 type Pointed = {h: Highlight; shot: PhoneShot};
 

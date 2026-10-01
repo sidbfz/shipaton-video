@@ -10,6 +10,13 @@ import {CareCard, Closing, Resolution} from './scenes/Outro';
 import {colors} from './theme';
 
 /**
+ * Burned-in captions are off: the headlines and callouts already carry the
+ * story, and subtitles ship as out/fistula-tracker-shipaton.srt for YouTube
+ * (npm run srt). Set to true to burn them in again.
+ */
+const BURN_IN_CAPTIONS = false;
+
+/**
  * Master timeline. Every scene is authored in absolute voice-over seconds
  * (see src/data/captions.ts for the word-aligned narration timings).
  */
@@ -40,9 +47,11 @@ export const FistulaTrackerVideo: React.FC = () => (
 			<At start={104.7} end={107.3} name="Care is never the paywall">
 				<CareCard />
 			</At>
-			<At start={0} end={118.625} name="Captions">
-				<Captions />
-			</At>
+			{BURN_IN_CAPTIONS ? (
+				<At start={0} end={118.625} name="Captions">
+					<Captions />
+				</At>
+			) : null}
 			<Grain />
 		</FontGate>
 	</AbsoluteFill>
