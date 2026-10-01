@@ -1,85 +1,85 @@
 import React from 'react';
-import {AbsoluteFill} from 'remotion';
+import {AbsoluteFill, Img, staticFile} from 'remotion';
 import {Grain} from './components/Grain';
 import {Phone, PhoneShot} from './components/Phone';
-import {boxOnCanvas, phoneDims} from './components/phoneGeometry';
+import {phoneDims} from './components/phoneGeometry';
 import {FontGate} from './fonts';
 import {colors, fonts} from './theme';
 
 /**
- * YouTube thumbnail (1280 x 720) in the video's own language: the charcoal
- * field of the opening and "Care is never the paywall", cream serif with a
- * soft-rose italic, and the rose highlight + leader line used for pointing.
- *
- * Attention path: "Built after two surgeries." -> the name -> the leader line
- * -> the pain check-in on the phone (the brightest thing in the frame). The
- * phone is cut by the bottom edge so it can be large; YouTube's duration badge
- * then only covers the lower part of the app.
+ * YouTube thumbnail (1280 x 720) in the video's look. One brand block on the
+ * left — logo, the name, the reason it exists — and the Home screen as the
+ * hero on the right, close enough to read as one composition. A soft glow in
+ * the logo's icing pink gives the cream page a colour pop. The phone is cut by
+ * the bottom edge so it can be large; YouTube's duration badge then only covers
+ * the lower part of the app.
  * Render: npm run thumbnail -> out/thumbnail.png
  */
 export const THUMB = {width: 1280, height: 720};
 
 const MARGIN = 72;
-const SCREEN_H = 900;
+const SCREEN_H = 1000;
 const d = phoneDims(SCREEN_H);
+const PHONE_CX = 930;
+const PHONE_TOP = 52;
 
-/** Check-in: "How bad is the pain today?" with the 0–10 scale (held frame, as in the video). */
-const CHECK_IN: PhoneShot[] = [{src: '03-home-and-checkin.mp4', at: 0, clip: 3.7, holdAt: 3.7}];
-/** The pain question and scale, in source px. */
-const TARGET: [number, number, number, number] = [12, 600, 696, 360];
+/** Home: "Noticing signs" and the dark "How are you today?" card (held frame, as in the video). */
+const HOME: PhoneShot[] = [{src: '03-home-and-checkin.mp4', at: 0, clip: 0.9, holdAt: 0.9}];
 
-const NAME = {size: 172, lineHeight: 0.9, top: 250};
-const nameLine = NAME.size * NAME.lineHeight;
-/** Vertical centre of "Tracker" — the leader runs straight into it. */
-const trackerY = NAME.top + nameLine * 1.5;
-
-// Place the phone so the target's centre sits level with "Tracker".
-const PHONE_TOP = Math.round(trackerY - d.bezel - (TARGET[1] + TARGET[3] / 2) * d.scale);
-const PHONE_CX = THUMB.width - MARGIN - d.deviceW / 2;
-const target = boxOnCanvas(TARGET, PHONE_CX, PHONE_TOP + d.deviceH / 2, SCREEN_H);
-const PAD = 6;
-const LINE_END = 572; // just past the end of "Tracker"
+const ICING = '226, 120, 124'; // the logo's pink
 
 export const Thumbnail: React.FC = () => (
-	<AbsoluteFill style={{background: colors.charcoal}}>
+	<AbsoluteFill style={{background: colors.cream}}>
 		<FontGate>
-			{/* A soft warm glow behind the phone. */}
+			{/* Warm pink glow behind the phone, fading into the paper. */}
 			<AbsoluteFill
 				style={{
-					background: `radial-gradient(ellipse 520px 460px at ${PHONE_CX}px 430px, rgba(180, 114, 110, 0.22), rgba(180, 114, 110, 0) 70%)`,
+					background: `radial-gradient(ellipse 600px 520px at ${PHONE_CX}px 380px, rgba(${ICING}, 0.42), rgba(${ICING}, 0.16) 55%, rgba(${ICING}, 0) 100%)`,
 				}}
 			/>
+			{/* Brand block, centred vertically. */}
 			<div
 				style={{
 					position: 'absolute',
 					left: MARGIN,
-					top: 176,
-					fontFamily: fonts.sans,
-					fontWeight: 600,
-					fontSize: 40,
-					letterSpacing: '-0.01em',
-					color: 'rgba(243, 238, 231, 0.86)',
+					top: 0,
+					bottom: 0,
+					display: 'flex',
+					flexDirection: 'column',
+					justifyContent: 'center',
 				}}
 			>
-				Built after two surgeries.
+				<Img src={staticFile('logo.png')} style={{width: 150, height: 150, display: 'block', marginLeft: -10, marginBottom: 6}} />
+				<div
+					style={{
+						fontFamily: fonts.serif,
+						fontSize: 164,
+						lineHeight: 0.9,
+						letterSpacing: '-0.015em',
+						color: colors.ink,
+						marginLeft: -6,
+					}}
+				>
+					<div>Fistula</div>
+					<div style={{fontStyle: 'italic', color: colors.roseDeep}}>Tracker</div>
+				</div>
+				<div
+					style={{
+						marginTop: 28,
+						fontFamily: fonts.sans,
+						fontWeight: 700,
+						fontSize: 38,
+						lineHeight: 1.22,
+						letterSpacing: '-0.01em',
+						color: colors.ink,
+					}}
+				>
+					I built this after
+					<br />
+					<span style={{color: colors.roseDeep}}>two surgeries.</span>
+				</div>
 			</div>
-			<div
-				style={{
-					position: 'absolute',
-					left: MARGIN - 7,
-					top: NAME.top,
-					fontFamily: fonts.serif,
-					fontSize: NAME.size,
-					lineHeight: NAME.lineHeight,
-					letterSpacing: '-0.015em',
-					color: colors.cream,
-				}}
-			>
-				<div>Fistula</div>
-				<div style={{fontStyle: 'italic', color: colors.roseSoft}}>Tracker</div>
-			</div>
-			<Phone shots={CHECK_IN} end={10} cx={PHONE_CX} cy={PHONE_TOP + d.deviceH / 2} screenH={SCREEN_H} />
-			{/* A faint rim so the dark device still reads as a phone on the charcoal field. */}
+			{/* A deeper, softer shadow so the phone lifts off the page. */}
 			<div
 				style={{
 					position: 'absolute',
@@ -88,26 +88,10 @@ export const Thumbnail: React.FC = () => (
 					width: d.deviceW,
 					height: d.deviceH,
 					borderRadius: d.outerR,
-					boxShadow: '0 0 0 1.5px rgba(243, 238, 231, 0.16)',
+					boxShadow: '0 50px 90px -30px rgba(110, 52, 46, 0.45), 0 20px 40px -20px rgba(110, 52, 46, 0.30)',
 				}}
 			/>
-			{/* The video's pointing system: a rose outline on the control and a leader line to the words. */}
-			<div
-				style={{
-					position: 'absolute',
-					left: target.x - PAD,
-					top: target.y - PAD,
-					width: target.w + PAD * 2,
-					height: target.h + PAD * 2,
-					borderRadius: 16,
-					border: `3px solid ${colors.rose}`,
-					boxShadow: '0 0 0 7px rgba(180, 114, 110, 0.16)',
-				}}
-			/>
-			<svg width={THUMB.width} height={THUMB.height} style={{position: 'absolute', left: 0, top: 0}}>
-				<line x1={LINE_END} y1={trackerY} x2={target.x - PAD} y2={trackerY} stroke={colors.rose} strokeWidth={3} />
-				<circle cx={target.x - PAD} cy={trackerY} r={6} fill={colors.rose} />
-			</svg>
+			<Phone shots={HOME} end={10} cx={PHONE_CX} cy={PHONE_TOP + d.deviceH / 2} screenH={SCREEN_H} />
 			<Grain />
 		</FontGate>
 	</AbsoluteFill>
