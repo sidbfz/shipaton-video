@@ -53,7 +53,7 @@ RANGES = {
     '02-onboarding-personalization.mp4': [(14.05, 14.6)],
     '03-home-and-checkin.mp4': [(0.0, 0.9), (1.2, 3.7)],
     '04-history-and-timeline.mp4': [(5.2, 9.5)],
-    '05-medicine-reminders-routines.mp4': [(1.4, 2.4), (5.45, 8.6), (15.0, 18.9)],
+    '05-medicine-reminders-routines.mp4': [(1.75, 2.75), (5.45, 8.6), (15.0, 18.9)],
     '06-journal-and-photos.mp4': [(1.6, 2.55), (9.3, 10.4), (12.2, 13.55), (17.05, 18.45)],
     '07-privacy-and-settings.mp4': [(7.5, 8.0), (10.6, 13.3)],
     '08-lifetime-supporter.mp4': [(0.2, 1.6), (4.3, 5.5)],

@@ -103,8 +103,8 @@ const MAIN_SHOTS: PhoneShot[] = validateShots('MAIN', [
 	{
 		src: '05-medicine-reminders-routines.mp4',
 		at: 52.3,
-		clip: 1.4,
-		holdAt: 2.4,
+		clip: 1.75,
+		holdAt: 2.75, // after the app's own page transition has settled (2.67s)
 		highlights: [
 			{from: 53.45, to: 54.6, box: [26, 696, 668, 322], radius: 28, callout: {label: 'Your medicines', note: 'Schedule, days and label wording together.'}},
 		],
@@ -193,8 +193,8 @@ const MAIN_SHOTS: PhoneShot[] = validateShots('MAIN', [
 	{
 		src: '07-privacy-and-settings.mp4',
 		at: 76.5,
-		clip: 2.75,
-		holdAt: 2.75,
+		clip: 3.0,
+		holdAt: 3.0, // after the app's own page transition has settled (2.96s)
 		highlights: [
 			{from: 77.0, to: 79.2, box: [16, 378, 696, 268], radius: 20, callout: {label: 'Private by default', note: 'No account, no cloud sync, no analytics.'}},
 		],
